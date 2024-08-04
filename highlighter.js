@@ -134,14 +134,6 @@ function getDefaultVersion()
   return 2;
 }
 
-function addStylesheet(href)
-{
-  var link = document.createElement('link');
-  link.href = href;
-  link.rel = 'stylesheet';
-  return document.getElementsByTagName("head")[0].appendChild(link);
-}
-
 function addToolToggleVersion(pre)
 {
   var tb = pre.parentNode.previousSibling;

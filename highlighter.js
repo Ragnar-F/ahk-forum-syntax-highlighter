@@ -21,7 +21,8 @@ docReady(function() {
   for (var i = 0; i < available_versions.length; i++)
   {
     var ver = available_versions[i];
-    addSyntaxColors(window['pres' + ver], ver);
+    if (window['pres' + ver].length)
+      addSyntaxColors(window['pres' + ver], ver);
   }
 });
 

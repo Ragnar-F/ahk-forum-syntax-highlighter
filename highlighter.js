@@ -131,7 +131,7 @@ function getDefaultVersion()
     for (var i = 0; i < available_versions.length; i++)
       if (forum_ids[i].indexOf(forum_id) != -1)
         return i + 1;
-  return 2;
+  return available_versions[available_versions.length - 1];
 }
 
 function addToolToggleVersion(pre)

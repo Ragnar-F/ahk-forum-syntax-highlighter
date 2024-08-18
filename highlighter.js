@@ -32,7 +32,7 @@ function addSyntaxColors(pres, ver)
     return;
   if (!retrieveData(docs_path + ver + '/static/source/data_index.js', 'indexData', 'index' + ver, function() {addSyntaxColors(pres, ver);}))
     return;
-  window['highlighter' + ver].addSyntaxColors(pres, window['index' + ver], docs_path + ver + '/');
+  window['highlighter' + ver].addSyntaxColors(pres, window['index' + ver], docs_path + ver + '/', true);
 }
 
 function loadScript(url, callback)

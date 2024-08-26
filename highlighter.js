@@ -1,38 +1,40 @@
 var available_versions = [1, 2];
 var default_ver = getDefaultVersion();
 var docs_path = '/docs/v';
+// var docs_path = 'http://127.0.0.1:5500/docs/v';
 
 docReady(function() {
-  var pres = document.querySelectorAll('code.lang-autohotkey');
-  if (!pres.length)
+  var codes = document.querySelectorAll('code.lang-autohotkey');
+  if (!codes.length)
     return;
   for (var i = 0; i < available_versions.length; i++)
-    window['pres' + available_versions[i]] = [];
-  for (var i = 0; i < pres.length; i++)
+    window['codes' + available_versions[i]] = [];
+  for (var i = 0; i < codes.length; i++)
   {
-    var pre = pres[i];
+    var pre = codes[i].parentNode;
+    pre.className = pre.className.replace('line-numbers', 'line-numbers-hide');
     pre.ver = identifyByRequires(pre.innerText);
     pre.originalContent = pre.innerHTML;
     if (available_versions.indexOf(pre.ver) == -1)
       pre.ver = default_ver;
-    window['pres' + pre.ver].push(pre);
+    window['codes' + pre.ver].push(pre);
     addToolToggleVersion(pre);
   }
   for (var i = 0; i < available_versions.length; i++)
   {
     var ver = available_versions[i];
-    if (window['pres' + ver].length)
-      addSyntaxColors(window['pres' + ver], ver);
+    if (window['codes' + ver].length)
+      addSyntaxColors(window['codes' + ver], ver);
   }
 });
 
-function addSyntaxColors(pres, ver)
+function addSyntaxColors(codes, ver)
 {
-  if (!retrieveCtor(docs_path + ver + '/static/highlighter/highlighter.js', 'ctor_highlighter', 'highlighter' + ver, function() {addSyntaxColors(pres, ver);}))
+  if (!retrieveCtor(docs_path + ver + '/static/highlighter/highlighter.js', 'ctor_highlighter', 'highlighter' + ver, function() {addSyntaxColors(codes, ver);}))
     return;
-  if (!retrieveData(docs_path + ver + '/static/source/data_index.js', 'indexData', 'index' + ver, function() {addSyntaxColors(pres, ver);}))
+  if (!retrieveData(docs_path + ver + '/static/source/data_index.js', 'indexData', 'index' + ver, function() {addSyntaxColors(codes, ver);}))
     return;
-  window['highlighter' + ver].addSyntaxColors(pres, window['index' + ver], docs_path + ver + '/', true);
+  window['highlighter' + ver].addSyntaxColors(codes, window['index' + ver], docs_path + ver + '/', true);
 }
 
 function loadScript(url, callback)
@@ -137,7 +139,7 @@ function getDefaultVersion()
 
 function addToolToggleVersion(pre)
 {
-  var tb = pre.parentNode.previousSibling;
+  var tb = pre.previousSibling;
   var toggleVersion = document.createElement('a');
   toggleVersion.href = '#';
   var next_ver = getNextVersion(pre.ver);
@@ -148,7 +150,7 @@ function addToolToggleVersion(pre)
 
 function toggleVersion(toggleVersion)
 {
-  var pre = toggleVersion.parentNode.parentNode.querySelector('code.lang-autohotkey');
+  var pre = toggleVersion.parentNode.parentNode.querySelector('pre');
   var next_ver = getNextVersion(pre.ver);
   var next_next_ver = getNextVersion(next_ver);
   toggleVersion.innerHTML = 'Toggle version (' + next_ver + ' → ' + next_next_ver + ')';

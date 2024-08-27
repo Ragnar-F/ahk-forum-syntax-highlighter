@@ -2,12 +2,9 @@
 @import url('/docs/v2/static/highlighter/light.css');
 
 /* joedf: prism-coy theme alternating line bg style */
-.highlight code {
-  background-size: 3em 2.8em !important;
-}
 .codebox code {
   background-image: linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
-  background-size: 3em 2.86em;
+  background-size: 2.6em 2.6em;
   background-attachment: local;
   background-origin: content-box;
   background-color: #fdfdfd;

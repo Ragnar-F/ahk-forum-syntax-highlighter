@@ -37,6 +37,15 @@ function addSyntaxColors(codes, ver)
   window['highlighter' + ver].addSyntaxColors(codes, window['index' + ver], docs_path + ver + '/', true);
 }
 
+function isLightTheme()
+{
+  var body_rgb = getComputedStyle(document.body).getPropertyValue("background-color");
+  var color_str_values = body_rgb.replace(/[^\d|,]/g,'').split(',');
+  var sum = color_str_values.reduce((a, b) => a + parseInt(b), 0);
+  var avg = sum / color_str_values.length;
+  return (avg >= 128);
+}
+
 function loadScript(url, callback)
 {
   var script = document.createElement("script");

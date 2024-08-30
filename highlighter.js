@@ -152,7 +152,7 @@ function addToolToggleVersion(pre)
   var toggleVersion = document.createElement('a');
   toggleVersion.href = '#';
   var next_ver = getNextVersion(pre.ver);
-  // toggleVersion.innerHTML = 'Version (' + pre.ver + ' → ' + next_ver + ')';
+  toggleVersion.title = 'Toggle version (' + pre.ver + ' → ' + next_ver + ')';
   toggleVersion.innerHTML = 'V' + pre.ver;
   toggleVersion.setAttribute('onclick', 'toggleVersion(this); return false;');
   tb.innerHTML += ' - ' + toggleVersion.outerHTML;
@@ -163,7 +163,7 @@ function toggleVersion(toggleVersion)
   var pre = toggleVersion.parentNode.parentNode.querySelector('pre');
   var next_ver = getNextVersion(pre.ver);
   var next_next_ver = getNextVersion(next_ver);
-  // toggleVersion.innerHTML = 'Version (' + next_ver + ' → ' + next_next_ver + ')';
+  toggleVersion.title = 'Toggle version (' + next_ver + ' → ' + next_next_ver + ')';
   toggleVersion.innerHTML = 'V' + next_ver;
   pre.innerHTML = pre.originalContent;
   addSyntaxColors([pre], next_ver);

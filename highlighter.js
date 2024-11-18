@@ -117,8 +117,16 @@ function identifyByRequires(syntax)
     for (i = 0; i < items.length; i++)
     {
       var item = items[i];
-      if (!item.match(/\d+-bit/i) && (m = item.match(/(?:<|<=|>|>=|=)?v?(\d+)/i)))
-        return parseInt(m[1]);
+      if (!item.match(/\d+-bit/i) && (m = item.match(/(<|<=|>|>=|=)?v?(\d+)/i)))
+      {
+        var op = m[1] || '', required_ver = parseInt(m[2]);
+        if (op[0] == '<')
+          return default_ver < required_ver ? default_ver : --required_ver;
+        else if (op[0] == '>')
+          return default_ver > required_ver ? default_ver : ++required_ver;
+        else
+          return required_ver;
+      }
     }
   }
   return null;

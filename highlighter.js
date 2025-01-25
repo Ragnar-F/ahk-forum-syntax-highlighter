@@ -1,5 +1,9 @@
-var available_versions = [1, 2];
-var default_ver = getDefaultVersion();
+var forum_ids = [
+  [76, 18, 6, 19, 7, 74],       // v1
+  [82, 94, 83, 95, 96, 92, 37]  // v2
+];
+var ver_latest = forum_ids.length;
+var ver_default = getDefaultVersion() || ver_latest;
 var docs_path = '/docs/v';
 // var docs_path = 'http://127.0.0.1:5500/docs/v';
 
@@ -7,25 +11,20 @@ docReady(function() {
   var codes = document.querySelectorAll('code.lang-autohotkey');
   if (!codes.length)
     return;
-  for (var i = 0; i < available_versions.length; i++)
-    window['codes' + available_versions[i]] = [];
+  for (var i = 1; i <= ver_latest; i++)
+    window['codes' + i] = [];
   for (var i = 0; i < codes.length; i++)
   {
     var pre = codes[i].parentNode;
     pre.className = pre.className.replace('line-numbers', 'line-numbers-hide');
-    pre.ver = identifyByRequires(pre.innerText);
+    pre.ver = identifyByRequires(pre.innerText) || ver_default;
     pre.originalContent = pre.innerHTML;
-    if (available_versions.indexOf(pre.ver) == -1)
-      pre.ver = default_ver;
     window['codes' + pre.ver].push(pre);
     addToolToggleVersion(pre);
   }
-  for (var i = 0; i < available_versions.length; i++)
-  {
-    var ver = available_versions[i];
-    if (window['codes' + ver].length)
-      addSyntaxColors(window['codes' + ver], ver);
-  }
+  for (var i = 1; i <= ver_latest; i++)
+    if (window['codes' + i].length)
+      addSyntaxColors(window['codes' + i], i);
 });
 
 function addSyntaxColors(codes, ver)
@@ -119,25 +118,26 @@ function identifyByRequires(syntax)
       var item = items[i];
       if (!item.match(/\d+-bit/i) && (m = item.match(/(<|<=|>|>=|=)?v?(\d+)/i)))
       {
-        var op = m[1] || '', required_ver = parseInt(m[2]);
+        var op = m[1] || '', ver_required = parseInt(m[2]);
         if (op[0] == '<')
-          return default_ver < required_ver ? default_ver : --required_ver;
+          return clamp(ver_default < ver_required ? ver_default : --ver_required, 1, ver_latest);
         else if (op[0] == '>')
-          return default_ver > required_ver ? default_ver : ++required_ver;
+          return clamp(ver_default > ver_required ? ver_default : ++ver_required, 1, ver_latest);
         else
-          return required_ver;
+          return ver_required;
       }
     }
   }
   return null;
+
+  function clamp(num, min, max)
+  {
+    return num <= min ? min : num >= max ? max : num
+  }
 }
 
 function getDefaultVersion()
 {
-  var forum_ids = [
-    [76, 18, 6, 19, 7, 74],       // v1
-    [82, 94, 83, 95, 96, 92, 37]  // v2
-  ];
   var forum_id = null;
   if (m = location.href.match(/f=(\d+)/))
     forum_id = parseInt(m[1]);
@@ -148,10 +148,10 @@ function getDefaultVersion()
       forum_id = parseInt(m[1]);
   }
   if (forum_id)
-    for (var i = 0; i < available_versions.length; i++)
+    for (var i = 0; i < forum_ids.length; i++)
       if (forum_ids[i].indexOf(forum_id) != -1)
         return i + 1;
-  return available_versions[available_versions.length - 1];
+  return null;
 }
 
 function addToolToggleVersion(pre)
@@ -180,6 +180,5 @@ function toggleVersion(toggleVersion)
 
 function getNextVersion(ver)
 {
-  var index = available_versions.indexOf(ver);
-  return index != -1 ? available_versions[(index + 1) % available_versions.length] : null;
+  return (++ver > ver_latest) ? 1 : ver;
 }
